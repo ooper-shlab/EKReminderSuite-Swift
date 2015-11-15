@@ -1,0 +1,383 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D77472AA1BF8341F00C52B1A /* EKRSHelperClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472A61BF8341F00C52B1A /* EKRSHelperClass.swift */; };
+		D77472AB1BF8341F00C52B1A /* EKRSReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472A71BF8341F00C52B1A /* EKRSReminderStore.swift */; };
+		D77472AC1BF8341F00C52B1A /* EKRSReminderStoreUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472A81BF8341F00C52B1A /* EKRSReminderStoreUtilities.swift */; };
+		D77472AD1BF8341F00C52B1A /* EKRSConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472A91BF8341F00C52B1A /* EKRSConstants.swift */; };
+		D77472AF1BF8378C00C52B1A /* LocationReminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472AE1BF8378C00C52B1A /* LocationReminder.swift */; };
+		D77472B11BF838D300C52B1A /* MyAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472B01BF838D300C52B1A /* MyAnnotation.swift */; };
+		D77472B31BF83A7600C52B1A /* LocationReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472B21BF83A7600C52B1A /* LocationReminderStore.swift */; };
+		D77472B51BF83BC700C52B1A /* AddLocationReminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472B41BF83BC700C52B1A /* AddLocationReminder.swift */; };
+		D77472B71BF86B7900C52B1A /* LocationTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472B61BF86B7900C52B1A /* LocationTabBarController.swift */; };
+		D77472B91BF8A06500C52B1A /* RemindersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472B81BF8A06500C52B1A /* RemindersViewController.swift */; };
+		D77472BB1BF8A64A00C52B1A /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472BA1BF8A64A00C52B1A /* MapViewController.swift */; };
+		D77472BD1BF8B39E00C52B1A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77472BC1BF8B39E00C52B1A /* AppDelegate.swift */; };
+		EB18FF2D199ED3850048BD43 /* LocationReminders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB18FF2F199ED3850048BD43 /* LocationReminders.storyboard */; };
+		EB245ED41994069600F35718 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EB245ED21994069600F35718 /* InfoPlist.strings */; };
+		EB245EDC1994069700F35718 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB245EDB1994069700F35718 /* Images.xcassets */; };
+		EBC4F8E319A2B8F2003F20AA /* Locations.plist in Resources */ = {isa = PBXBuildFile; fileRef = EBC4F8E219A2B8F1003F20AA /* Locations.plist */; };
+		EBD937131BDEB510005D3410 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBD937121BDEB510005D3410 /* Launch Screen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D77472A61BF8341F00C52B1A /* EKRSHelperClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EKRSHelperClass.swift; sourceTree = "<group>"; };
+		D77472A71BF8341F00C52B1A /* EKRSReminderStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EKRSReminderStore.swift; sourceTree = "<group>"; };
+		D77472A81BF8341F00C52B1A /* EKRSReminderStoreUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EKRSReminderStoreUtilities.swift; sourceTree = "<group>"; };
+		D77472A91BF8341F00C52B1A /* EKRSConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EKRSConstants.swift; sourceTree = "<group>"; };
+		D77472AE1BF8378C00C52B1A /* LocationReminder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationReminder.swift; sourceTree = "<group>"; };
+		D77472B01BF838D300C52B1A /* MyAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAnnotation.swift; sourceTree = "<group>"; };
+		D77472B21BF83A7600C52B1A /* LocationReminderStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationReminderStore.swift; sourceTree = "<group>"; };
+		D77472B41BF83BC700C52B1A /* AddLocationReminder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddLocationReminder.swift; sourceTree = "<group>"; };
+		D77472B61BF86B7900C52B1A /* LocationTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTabBarController.swift; sourceTree = "<group>"; };
+		D77472B81BF8A06500C52B1A /* RemindersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemindersViewController.swift; sourceTree = "<group>"; };
+		D77472BA1BF8A64A00C52B1A /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		D77472BC1BF8B39E00C52B1A /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		EB0F064B1ABA12A500106E98 /* ReadMe.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReadMe.md; sourceTree = "<group>"; };
+		EB245EC61994069500F35718 /* EKLocationReminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EKLocationReminders.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB245ED11994069600F35718 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EB245ED31994069600F35718 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EB245EDB1994069700F35718 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EKLocationReminders/Images.xcassets; sourceTree = "<group>"; };
+		EBC4F8E219A2B8F1003F20AA /* Locations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Locations.plist; sourceTree = "<group>"; };
+		EBD937121BDEB510005D3410 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		EBDE2D881BC5C1E900B0C0A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LocationReminders.storyboard; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EB245EC31994069500F35718 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EB18FF13199ECEDA0048BD43 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D77472AE1BF8378C00C52B1A /* LocationReminder.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		EB18FF1B199ED3160048BD43 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				D77472BA1BF8A64A00C52B1A /* MapViewController.swift */,
+				D77472B81BF8A06500C52B1A /* RemindersViewController.swift */,
+				D77472B61BF86B7900C52B1A /* LocationTabBarController.swift */,
+				D77472B41BF83BC700C52B1A /* AddLocationReminder.swift */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		EB245EBD1994069500F35718 = {
+			isa = PBXGroup;
+			children = (
+				EB0F064B1ABA12A500106E98 /* ReadMe.md */,
+				EB245ECF1994069600F35718 /* EKLocationReminders */,
+				EB245EDB1994069700F35718 /* Images.xcassets */,
+				EB245EC71994069500F35718 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EB245EC71994069500F35718 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EB245EC61994069500F35718 /* EKLocationReminders.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EB245ECF1994069600F35718 /* EKLocationReminders */ = {
+			isa = PBXGroup;
+			children = (
+				D77472BC1BF8B39E00C52B1A /* AppDelegate.swift */,
+				D77472B21BF83A7600C52B1A /* LocationReminderStore.swift */,
+				D77472B01BF838D300C52B1A /* MyAnnotation.swift */,
+				EB18FF13199ECEDA0048BD43 /* Model */,
+				EBC2E9281ABB62DA00A01D77 /* Shared Code */,
+				EB18FF1B199ED3160048BD43 /* View Controllers */,
+				EB245ED01994069600F35718 /* Supporting Files */,
+			);
+			path = EKLocationReminders;
+			sourceTree = "<group>";
+		};
+		EB245ED01994069600F35718 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EBC4F8E219A2B8F1003F20AA /* Locations.plist */,
+				EB18FF2F199ED3850048BD43 /* LocationReminders.storyboard */,
+				EB245ED11994069600F35718 /* Info.plist */,
+				EB245ED21994069600F35718 /* InfoPlist.strings */,
+				EBD937121BDEB510005D3410 /* Launch Screen.storyboard */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EBC2E9281ABB62DA00A01D77 /* Shared Code */ = {
+			isa = PBXGroup;
+			children = (
+				D77472A91BF8341F00C52B1A /* EKRSConstants.swift */,
+				D77472A61BF8341F00C52B1A /* EKRSHelperClass.swift */,
+				D77472A71BF8341F00C52B1A /* EKRSReminderStore.swift */,
+				D77472A81BF8341F00C52B1A /* EKRSReminderStoreUtilities.swift */,
+			);
+			name = "Shared Code";
+			path = "../../Shared Code";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EB245EC51994069500F35718 /* EKLocationReminders */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB245EF21994069700F35718 /* Build configuration list for PBXNativeTarget "EKLocationReminders" */;
+			buildPhases = (
+				EB245EC21994069500F35718 /* Sources */,
+				EB245EC31994069500F35718 /* Frameworks */,
+				EB245EC41994069500F35718 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EKLocationReminders;
+			productName = EKLocationReminders;
+			productReference = EB245EC61994069500F35718 /* EKLocationReminders.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EB245EBE1994069500F35718 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "___FULLUSERNAME___";
+			};
+			buildConfigurationList = EB245EC11994069500F35718 /* Build configuration list for PBXProject "EKLocationReminders" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EB245EBD1994069500F35718;
+			productRefGroup = EB245EC71994069500F35718 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EB245EC51994069500F35718 /* EKLocationReminders */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EB245EC41994069500F35718 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB18FF2D199ED3850048BD43 /* LocationReminders.storyboard in Resources */,
+				EB245ED41994069600F35718 /* InfoPlist.strings in Resources */,
+				EBC4F8E319A2B8F2003F20AA /* Locations.plist in Resources */,
+				EBD937131BDEB510005D3410 /* Launch Screen.storyboard in Resources */,
+				EB245EDC1994069700F35718 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EB245EC21994069500F35718 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D77472B51BF83BC700C52B1A /* AddLocationReminder.swift in Sources */,
+				D77472B71BF86B7900C52B1A /* LocationTabBarController.swift in Sources */,
+				D77472B11BF838D300C52B1A /* MyAnnotation.swift in Sources */,
+				D77472BD1BF8B39E00C52B1A /* AppDelegate.swift in Sources */,
+				D77472B91BF8A06500C52B1A /* RemindersViewController.swift in Sources */,
+				D77472AD1BF8341F00C52B1A /* EKRSConstants.swift in Sources */,
+				D77472AF1BF8378C00C52B1A /* LocationReminder.swift in Sources */,
+				D77472B31BF83A7600C52B1A /* LocationReminderStore.swift in Sources */,
+				D77472BB1BF8A64A00C52B1A /* MapViewController.swift in Sources */,
+				D77472AA1BF8341F00C52B1A /* EKRSHelperClass.swift in Sources */,
+				D77472AB1BF8341F00C52B1A /* EKRSReminderStore.swift in Sources */,
+				D77472AC1BF8341F00C52B1A /* EKRSReminderStoreUtilities.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		EB18FF2F199ED3850048BD43 /* LocationReminders.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EBDE2D881BC5C1E900B0C0A2 /* Base */,
+			);
+			name = LocationReminders.storyboard;
+			sourceTree = "<group>";
+		};
+		EB245ED21994069600F35718 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EB245ED31994069600F35718 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EB245EF01994069700F35718 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		EB245EF11994069700F35718 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EB245EF31994069700F35718 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EKLocationReminders/EKLocationReminders-Prefix.pch";
+				INFOPLIST_FILE = EKLocationReminders/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		EB245EF41994069700F35718 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EKLocationReminders/EKLocationReminders-Prefix.pch";
+				INFOPLIST_FILE = EKLocationReminders/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EB245EC11994069500F35718 /* Build configuration list for PBXProject "EKLocationReminders" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB245EF01994069700F35718 /* Debug */,
+				EB245EF11994069700F35718 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EB245EF21994069700F35718 /* Build configuration list for PBXNativeTarget "EKLocationReminders" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB245EF31994069700F35718 /* Debug */,
+				EB245EF41994069700F35718 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EB245EBE1994069500F35718 /* Project object */;
+}
