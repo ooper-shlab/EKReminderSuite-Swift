@@ -29,7 +29,7 @@ class RemindersViewController: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "handleLTBControllerNotification:",
+            selector: #selector(RemindersViewController.handleLTBControllerNotification(_:)),
             name: LTBRemindersFetchedNotification,
             object: nil)
         
@@ -39,7 +39,7 @@ class RemindersViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .Plain, target: self, action: "deleteAll:")]
+        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .Plain, target: self, action: #selector(RemindersViewController.deleteAll(_:)))]
     }
     
     

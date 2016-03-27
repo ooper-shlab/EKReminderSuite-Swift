@@ -33,7 +33,7 @@ class PastDueReminders: UITableViewController {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notification
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "handleTTBPastDueRemindersNotification:",
+            selector: #selector(PastDueReminders.handleTTBPastDueRemindersNotification(_:)),
             name: TTBPastDueRemindersNotification,
             object: nil)
         

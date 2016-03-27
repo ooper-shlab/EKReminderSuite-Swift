@@ -46,7 +46,7 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "handleLTBControllerNotification:",
+            selector: #selector(MapViewController.handleLTBControllerNotification(_:)),
             name: LTBAccessGrantedNotification,
             object: nil)
         

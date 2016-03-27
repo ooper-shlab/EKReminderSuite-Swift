@@ -46,7 +46,7 @@ class EKRSReminderStore: NSObject {
         
         super.init()
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "storeChanged:",
+            selector: #selector(EKRSReminderStore.storeChanged(_:)),
             name: EKEventStoreChangedNotification,
             object: eventStore)
     }

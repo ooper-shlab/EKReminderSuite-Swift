@@ -33,7 +33,7 @@ class CompletedReminders: UITableViewController {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notification
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "handleTTBCompletedRemindersNotification:",
+            selector: #selector(CompletedReminders.handleTTBCompletedRemindersNotification(_:)),
             name: TTBCompletedRemindersNotification,
             object: nil)
         
@@ -43,7 +43,7 @@ class CompletedReminders: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .Plain, target: self, action: "deleteAll:")]
+        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .Plain, target: self, action: #selector(CompletedReminders.deleteAll(_:)))]
     }
     
     
