@@ -29,20 +29,20 @@ class LocationTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let mainQueue = NSOperationQueue.mainQueue()
-        let center = NSNotificationCenter.defaultCenter()
+        let mainQueue = OperationQueue.main
+        let center = NotificationCenter.default
         
         // Register for access granted and denied, refresh data, location, and failure notifications
-        let accessGranted = center.addObserverForName(EKRSAccessGrantedNotification,
-            object: LocationReminderStore.sharedInstance,
+        let accessGranted = center.addObserver(forName: NSNotification.Name(EKRSAccessGrantedNotification),
+            object: LocationReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleEKRSAccessGrantedNotification(note)
         }
         
         
-        let accessDenied = center.addObserverForName(EKRSAccessDeniedNotification,
-            object: LocationReminderStore.sharedInstance,
+        let accessDenied = center.addObserver(forName: NSNotification.Name(EKRSAccessDeniedNotification),
+            object: LocationReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleEKRSAccessDeniedNotification(note)
@@ -50,22 +50,22 @@ class LocationTabBarController: UITabBarController {
         }
         
         
-        let refreshData = center.addObserverForName(EKRSRefreshDataNotification,
-            object: LocationReminderStore.sharedInstance,
+        let refreshData = center.addObserver(forName: NSNotification.Name(EKRSRefreshDataNotification),
+            object: LocationReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleEKRSRefreshDataNotification(note)
         }
         
-        let reminders = center.addObserverForName(EKRSLocationRemindersNotification,
-            object: LocationReminderStore.sharedInstance,
+        let reminders = center.addObserver(forName: NSNotification.Name(EKRSLocationRemindersNotification),
+            object: LocationReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleEKRSLocationRemindersNotification(note)
         }
         
-        let failure = center.addObserverForName(EKRSFailureNotification,
-            object: LocationReminderStore.sharedInstance,
+        let failure = center.addObserver(forName: NSNotification.Name(EKRSFailureNotification),
+            object: LocationReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleEKRSFailureNotification(note)
@@ -74,58 +74,58 @@ class LocationTabBarController: UITabBarController {
         // Keep track of our observers
         self.rsObservers = [accessGranted, accessDenied, refreshData, reminders, failure]
         // Check whether EKLocationReminders has access to Reminders
-        LocationReminderStore.sharedInstance.checkEventStoreAuthorizationStatus()
+        LocationReminderStore.shared.checkEventStoreAuthorizationStatus()
     }
     
     
     //MARK: - Handle Access Granted Notification
     
     // Handle the EKRSAccessGrantedNotification notification
-    private func handleEKRSAccessGrantedNotification(notification: NSNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName(LTBAccessGrantedNotification, object: self)
-        LocationReminderStore.sharedInstance.fetchLocationReminders()
+    private func handleEKRSAccessGrantedNotification(_ notification: Notification) {
+        NotificationCenter.default.post(name: Notification.Name(LTBAccessGrantedNotification), object: self)
+        LocationReminderStore.shared.fetchLocationReminders()
     }
     
     
     //MARK: - Handle Access Denied Notification
     
     // Handle the EKRSAccessDeniedNotification notification
-    private func handleEKRSAccessDeniedNotification(notification: NSNotification) {
-        let alert = EKRSHelperClass.alertWithTitle(NSLocalizedString("Privacy Warning", comment: ""),
+    private func handleEKRSAccessDeniedNotification(_ notification: Notification) {
+        let alert = EKRSHelperClass.alert(title: NSLocalizedString("Privacy Warning", comment: ""),
             message: NSLocalizedString("Access was not granted for Reminders.", comment: ""))
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
     //MARK: - Handle Refresh Data Notification
     
     // Handle the EKRSRefreshDataNotification notification
-    private func handleEKRSRefreshDataNotification(notificaion: NSNotification) {
-        LocationReminderStore.sharedInstance.fetchLocationReminders()
+    private func handleEKRSRefreshDataNotification(_ notificaion: Notification) {
+        LocationReminderStore.shared.fetchLocationReminders()
     }
     
     
     //MARK: - Handle Failure Notification
     
     // Handle the EKRSFailureNotification notification. Display the error message encountered
-    private func handleEKRSFailureNotification(notification: NSNotification) {
+    private func handleEKRSFailureNotification(_ notification: Notification) {
         let myNotification = notification.object as! LocationReminderStore
-        EKRSHelperClass.alertWithTitle(NSLocalizedString("Status", comment: ""),
-            message: myNotification.errorMessage!)
+        EKRSHelperClass.alert(title: NSLocalizedString("Status", comment: ""),
+            message: myNotification.errorMessage!) //### Just creating an alert without showing it...
     }
     
     
     //MARK: - Handle Incomplete Reminders Notification
     
     // Handle the EKRSLocationRemindersNotification notification
-    private func handleEKRSLocationRemindersNotification(notification : NSNotification) {
+    private func handleEKRSLocationRemindersNotification(_ notification : Notification) {
         let myNotification = notification.object as! LocationReminderStore
         
         // Update the number of the reminders in the tab bar
         self.tabBar.items?[1].badgeValue = String(myNotification.locationReminders.count)
         // Notify the listener that there are location reminders
-        NSNotificationCenter.defaultCenter().postNotificationName(LTBRemindersFetchedNotification, object: self)
+        NotificationCenter.default.post(name: Notification.Name(LTBRemindersFetchedNotification), object: self)
     }
     
     
@@ -139,7 +139,7 @@ class LocationTabBarController: UITabBarController {
     deinit {
         // Unregister for all observers saved in rsObservers
         for anObserver in self.rsObservers {
-            NSNotificationCenter.defaultCenter().removeObserver(anObserver)
+            NotificationCenter.default.removeObserver(anObserver)
         }
     }
     

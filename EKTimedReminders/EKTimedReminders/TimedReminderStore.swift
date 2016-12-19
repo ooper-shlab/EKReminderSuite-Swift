@@ -22,22 +22,22 @@ import EventKit
 class TimedReminderStore: EKRSReminderStore {
     
     
-    static let sharedInstance = TimedReminderStore()
+    static let shared = TimedReminderStore()
     
     
     //MARK: - Create Timed-Based Reminder
     
     // Create a timed-based reminder
-    func createTimedReminder(reminder: TimedReminder) {
+    func createTimedReminder(_ reminder: TimedReminder) {
         let myReminder = EKReminder(eventStore: self.eventStore)
         myReminder.title = reminder.title ?? ""
         myReminder.calendar = self.calendar!
         myReminder.priority = myReminder.priorityMatchingName(reminder.priority)
         
         // Create the date components of the reminder's start date components
-        let gregorian = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-        let unitFlags: NSCalendarUnit = [.Second, .Minute, .Hour, .Day, .Month, .Year]
-        let dateComponents = gregorian.components(unitFlags, fromDate: reminder.startDate!)
+        let gregorian = Calendar(identifier: Calendar.Identifier.gregorian)
+        let unitFlags: Set<Calendar.Component> = [.second, .minute, .hour, .day, .month, .year]
+        var dateComponents = gregorian.dateComponents(unitFlags, from: reminder.startDate!)
         dateComponents.timeZone = myReminder.timeZone
         
         

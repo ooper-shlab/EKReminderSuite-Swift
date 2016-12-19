@@ -26,10 +26,10 @@ class TimedReminder: NSObject {
     // Reminder's recurrence frequency
     var frequency: String?
     // Reminder's start date
-    var startDate: NSDate?
+    var startDate: Date?
     
     
-    init(title: String, startDate: NSDate, frequency: String, priority: String) {
+    init(title: String, startDate: Date, frequency: String, priority: String) {
         self.title = title
         self.startDate = startDate
         self.frequency = frequency

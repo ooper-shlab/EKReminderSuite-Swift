@@ -23,14 +23,14 @@ import EventKit
 extension EKAlarm {
     
     // Return the EKAlarmProximity value matching a given name
-    func proximityMatchingName(name: String) -> EKAlarmProximity {
+    func proximityMatchingName(_ name: String) -> EKAlarmProximity {
         // Default value
-        var alarmProximity = EKAlarmProximity.None
+        var alarmProximity = EKAlarmProximity.none
         
         if name == EKRSAlarmLeaving {
-            alarmProximity = .Leave
+            alarmProximity = .leave
         } else if name == EKRSAlarmArriving {
-            alarmProximity = .Enter
+            alarmProximity = .enter
         }
         
         return alarmProximity
@@ -38,12 +38,12 @@ extension EKAlarm {
     
     
     // Return the name matching a given EKAlarmProximity value
-    func nameMatchingProximity(proximity: EKAlarmProximity) -> String? {
+    func nameMatchingProximity(_ proximity: EKAlarmProximity) -> String? {
         var name: String? = nil
         
-        if proximity == .Leave {
+        if proximity == .leave {
             name = EKRSAlarmLeaving
-        } else if proximity == .Enter {
+        } else if proximity == .enter {
             name = EKRSAlarmArriving
         }
         
@@ -58,16 +58,16 @@ extension EKAlarm {
 extension EKRecurrenceRule {
     
     // Return the EKRecurrenceFrequency value matching a given name
-    func frequencyMatchingName(name: String) -> EKRecurrenceFrequency {
+    func frequencyMatchingName(_ name: String) -> EKRecurrenceFrequency {
         // Default value
-        var recurrence = EKRecurrenceFrequency.Daily
+        var recurrence = EKRecurrenceFrequency.daily
         
         if name == EKRSFrequencyWeekly {
-            recurrence = .Weekly
+            recurrence = .weekly
         } else if name == EKRSFrequencyMonthly {
-            recurrence = .Monthly
+            recurrence = .monthly
         } else if name == EKRSFrequencyYearly {
-            recurrence = .Yearly
+            recurrence = .yearly
         }
         
         return recurrence
@@ -75,18 +75,18 @@ extension EKRecurrenceRule {
     
     
     // Return the name matching a given EKRecurrenceFrequency value
-    func nameMatchingFrequency(frequency: EKRecurrenceFrequency) -> String {
+    func nameMatchingFrequency(_ frequency: EKRecurrenceFrequency) -> String {
         // Default value
         var name = EKRSFrequencyDaily
         
         switch frequency {
-        case .Daily:
+        case .daily:
             name = EKRSFrequencyDaily
-        case .Weekly:
+        case .weekly:
             name = EKRSFrequencyWeekly
-        case .Monthly:
+        case .monthly:
             name = EKRSFrequencyMonthly
-        case .Yearly:
+        case .yearly:
             name = EKRSFrequencyYearly
         }
         
@@ -95,7 +95,7 @@ extension EKRecurrenceRule {
     
     
     // Create a recurrence interval
-    func intervalMatchingFrequency(frequency: String) -> Int {
+    func intervalMatchingFrequency(_ frequency: String) -> Int {
         // Return 2 if the reminder repeats every two weeks and 1, otherwise
         let interval = frequency == EKRSFrequencyBiweekly ? 2 : 1
         return  interval
@@ -103,14 +103,14 @@ extension EKRecurrenceRule {
     
     
     // Create a recurrence rule
-    func recurrenceRuleMatchingFrequency(frequency: String) -> EKRecurrenceRule {
+    func recurrenceRuleMatchingFrequency(_ frequency: String) -> EKRecurrenceRule {
         // Create a recurrence interval matching the specified frequency
         let interval = self.intervalMatchingFrequency(frequency)
         // Create a weekly recurrence frequency if the reminder repeats every two  weeks. Fetch the EKRecurrenceFrequency value matching frequency, otherwise.
-        let recurrenceFrequency = frequency == EKRSFrequencyBiweekly ? EKRecurrenceFrequency.Weekly : self.frequencyMatchingName(frequency)
+        let recurrenceFrequency = frequency == EKRSFrequencyBiweekly ? EKRecurrenceFrequency.weekly : self.frequencyMatchingName(frequency)
         
         // Create a recurrence rule using the above recurrenceFrequency and interval
-        let rule = EKRecurrenceRule(recurrenceWithFrequency: recurrenceFrequency,
+        let rule = EKRecurrenceRule(recurrenceWith: recurrenceFrequency,
             interval: interval,
             end: nil)
         return rule
@@ -118,7 +118,7 @@ extension EKRecurrenceRule {
     
     
     // Return the name matching a recurrence rule
-    func nameMatchingRecurrenceRuleWithFrequency(frequence: EKRecurrenceFrequency, interval: Int) -> String {
+    func nameMatchingRecurrenceRuleWithFrequency(_ frequence: EKRecurrenceFrequency, interval: Int) -> String {
         // Get the name matching frequency
         var name = self.nameMatchingFrequency(frequency)
         
@@ -139,7 +139,7 @@ extension EKRecurrenceRule {
 extension EKReminder {
     
     // Return the priority value matching a given name
-    func priorityMatchingName(name: String?) -> Int {
+    func priorityMatchingName(_ name: String?) -> Int {
         var priority = 0
         switch name {
         case EKRSPriorityNone?:
@@ -163,7 +163,7 @@ extension EKReminder {
     // Priorities of 1-4, which are considered High, are represented by "!!!".
     // A priority of 5, which is considered Medium, is represented by "!!".
     // A priority of 6-9, which are considered Low, are represented by "!".
-    func symbolMatchingPriority(priority: Int) -> String? {
+    func symbolMatchingPriority(_ priority: Int) -> String? {
         var name: String? = nil
         switch priority {
         case 0:

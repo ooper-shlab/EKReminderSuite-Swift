@@ -36,8 +36,8 @@ class RepeatViewController: UITableViewController {
         super.viewDidLoad()
         
         // Fetch all frequency and description values
-        let plistURL = NSBundle.mainBundle().URLForResource(EKTRFrequenciesList, withExtension: EKTRFrequenciesListExtension)!
-        self.frequencies = NSArray(contentsOfURL: plistURL) as! [[String: String]]
+        let plistURL = Bundle.main.url(forResource: EKTRFrequenciesList, withExtension: EKTRFrequenciesListExtension)!
+        self.frequencies = NSArray(contentsOf: plistURL) as! [[String: String]]
     }
     
     
@@ -75,19 +75,19 @@ class RepeatViewController: UITableViewController {
     
     //MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
         return self.frequencies.count
     }
     
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let dictionary = self.frequencies[indexPath.row]
         
         // Add a checkmark for the selected row
         if dictionary[EKRSTitle] == self.displayedFrequency {
             self.currentFrequencyOption = dictionary
-            cell.accessoryType = .Checkmark
+            cell.accessoryType = .checkmark
         }
         
         cell.textLabel!.text = dictionary[EKRSDescription]
@@ -95,34 +95,34 @@ class RepeatViewController: UITableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCellWithIdentifier(EKTRRepeatViewControllerCellID, forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: EKTRRepeatViewControllerCellID, for: indexPath)
     }
     
     
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        let indexOfDisplayedFrequency = self.frequencies.indexOf{$0 == self.currentFrequencyOption}!
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let indexOfDisplayedFrequency = self.frequencies.index{$0 == self.currentFrequencyOption}!
         
         // Check whether the same row was selected and return, if it was.
         if indexOfDisplayedFrequency == indexPath.row {
             return
         }
         
-        let oldIndexPath = NSIndexPath(forRow: indexOfDisplayedFrequency, inSection: 0)
+        let oldIndexPath = IndexPath(row: indexOfDisplayedFrequency, section: 0)
         
-        let newCell = tableView.cellForRowAtIndexPath(indexPath)!
-        if newCell.accessoryType == .None {
-            newCell.accessoryType = .Checkmark
+        let newCell = tableView.cellForRow(at: indexPath)!
+        if newCell.accessoryType == .none {
+            newCell.accessoryType = .checkmark
             self.currentFrequencyOption = self.frequencies[indexPath.row]
         }
         
-        let oldCell = tableView.cellForRowAtIndexPath(oldIndexPath)!
-        if oldCell.accessoryType == .Checkmark {
-            oldCell.accessoryType = .None
+        let oldCell = tableView.cellForRow(at: oldIndexPath)!
+        if oldCell.accessoryType == .checkmark {
+            oldCell.accessoryType = .none
         }
     }
     
@@ -131,7 +131,7 @@ class RepeatViewController: UITableViewController {
     //MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Fetch the index for the current selected row
         let indexPath = self.tableView.indexPathForSelectedRow!
         // Update the displayed frequency with the one selected by the user

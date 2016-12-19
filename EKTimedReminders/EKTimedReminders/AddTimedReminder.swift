@@ -44,26 +44,26 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     private let EKTRAddTimedReminderUnwindSegue = "unwindToReminders"
     
     
-    @NSCopying private var displayedDate: NSDate!
+    private var displayedDate: Date!
     // Height of the date picker view
     private var pickerCellRowHeight: CGFloat = 0
     // keep track of which indexPath points to the cell with UIDatePicker
-    private var datePickerIndexPath: NSIndexPath?
+    private var datePickerIndexPath: IndexPath?
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.displayedDate = NSDate()
-        let pickerViewCellToCheck = self.tableView.dequeueReusableCellWithIdentifier(EKTRAddTimedReminderDatePickerID)!
+        self.displayedDate = Date()
+        let pickerViewCellToCheck = self.tableView.dequeueReusableCell(withIdentifier: EKTRAddTimedReminderDatePickerID)!
         self.pickerCellRowHeight = pickerViewCellToCheck.frame.size.height
     }
     
     
     //MARK: - Handle User Text Input
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        let titleCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))!
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let titleCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0))!
         let myTextField = titleCell.viewWithTag(EKTRAddTimedReminderTitleTag) as! UITextField
         
         // When the user presses return, take focus away from the text field so that the keyboard is dismissed.
@@ -72,7 +72,7 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
         }
         // Enable the Done button if and only if the user has entered a title for the reminder
         if !(myTextField.text?.isEmpty ?? true) {
-            self.navigationItem.rightBarButtonItem?.enabled = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
         return true
     }
@@ -80,18 +80,18 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     
     //MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return (self.indexPathHasPicker(indexPath) && indexPath.section == 1) ? self.pickerCellRowHeight : self.tableView.rowHeight
     }
     
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // Return the number of sections.
         return 3
     }
     
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         var sectionHeaderTitle: String? = nil
         switch section {
         case 1:
@@ -106,7 +106,7 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     }
     
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var numberOfRows = 1
         if section == 1 {
             // Show 3 rows if the date picker is shown and 2, otherwise
@@ -117,14 +117,14 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     }
     
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section == 1 && self.indexPathHasDate(indexPath) {
-            cell.detailTextLabel?.text = EKRSHelperClass.dateFormatter.stringFromDate(self.displayedDate)
+            cell.detailTextLabel?.text = EKRSHelperClass.dateFormatter.string(from: self.displayedDate)
         }
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cellID: String? = nil
         switch indexPath.section {
         case 0:
@@ -144,14 +144,14 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
             break
         }
         
-        return tableView.dequeueReusableCellWithIdentifier(cellID!, forIndexPath: indexPath)
+        return tableView.dequeueReusableCell(withIdentifier: cellID!, for: indexPath)
     }
     
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let cell = tableView.cellForRowAtIndexPath(indexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)
         if cell?.reuseIdentifier == EKTRAddTimedReminderDateCellID {
             self.displayDatePickerInlineForRowAtIndexPath(indexPath)
         }
@@ -167,13 +167,13 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     
     
     // Determines if the given indexPath points to a cell that contains the UIDatePicker.
-    private func indexPathHasPicker(indexPath: NSIndexPath) -> Bool {
+    private func indexPathHasPicker(_ indexPath: IndexPath) -> Bool {
         return self.hasInlineDatePicker && self.datePickerIndexPath?.row == indexPath.row
     }
     
     
     // Determines if the given indexPath points to a cell that contains the start/end dates.
-    private func indexPathHasDate(indexPath: NSIndexPath) -> Bool {
+    private func indexPathHasDate(_ indexPath: IndexPath) -> Bool {
         var hasDate = false
         
         if indexPath.row == EKTRAddTimedReminderMeOnDateRow {
@@ -184,7 +184,7 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     
     
     // Reveals the date picker inline for the given indexPath, called by "didSelectRowAtIndexPath"
-    private func displayDatePickerInlineForRowAtIndexPath(indexPath: NSIndexPath) {
+    private func displayDatePickerInlineForRowAtIndexPath(_ indexPath: IndexPath) {
         self.tableView.beginUpdates()
         
         // Show the picker if date cell was selected and picker is not shown
@@ -194,10 +194,10 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
             // Hide the picker if date cell was selected and picker is shown
         } else {
             self.addDatePickerAtIndexPath(indexPath)
-            self.datePickerIndexPath = NSIndexPath(forRow: indexPath.row+1, inSection: 1)
+            self.datePickerIndexPath = IndexPath(row: indexPath.row+1, section: 1)
         }
         
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        self.tableView.deselectRow(at: indexPath, animated: true)
         
         self.tableView.endUpdates()
         self.updateDatePicker()
@@ -205,26 +205,26 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     
     
     // Add the date picker view to the UI
-    private func addDatePickerAtIndexPath(indexPath: NSIndexPath) {
+    private func addDatePickerAtIndexPath(_ indexPath: IndexPath) {
         
-        let indexPaths = [NSIndexPath(forRow: indexPath.row+1, inSection: 1)]
-        self.tableView.insertRowsAtIndexPaths(indexPaths,
-            withRowAnimation: .Fade)
+        let indexPaths = [IndexPath(row: indexPath.row+1, section: 1)]
+        self.tableView.insertRows(at: indexPaths,
+            with: .fade)
     }
     
     
     // Remove the date picker view to the UI
-    private func hideDatePickerAtIndexPath(indexPath: NSIndexPath) {
-        let indexPaths = [NSIndexPath(forRow: indexPath.row+1, inSection: 1)]
-        self.tableView.deleteRowsAtIndexPaths(indexPaths,
-            withRowAnimation: .Fade)
+    private func hideDatePickerAtIndexPath(_ indexPath: IndexPath) {
+        let indexPaths = [IndexPath(row: indexPath.row+1, section: 1)]
+        self.tableView.deleteRows(at: indexPaths,
+            with: .fade)
     }
     
     
     // Update the UIDatePicker's value to match with the date of the cell above it
     private func updateDatePicker() {
         if let indexPath = self.datePickerIndexPath {
-            let datePickerCell = self.tableView.cellForRowAtIndexPath(indexPath)!
+            let datePickerCell = self.tableView.cellForRow(at: indexPath)!
             
             if let datePicker = datePickerCell.viewWithTag(EKTRAddTimedReminderDatePickerTag) as? UIDatePicker {
                 datePicker.date = self.displayedDate
@@ -234,13 +234,13 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     
     
     // Called when the user selects a date from the date picker view. Update the displayed date.
-    @IBAction func datePickerValueChanged(datePicker: UIDatePicker) {
+    @IBAction func datePickerValueChanged(_ datePicker: UIDatePicker) {
         if self.hasInlineDatePicker {
-            let dateCellIndexPath = NSIndexPath(forRow: self.datePickerIndexPath!.row-1, inSection: 1)
+            let dateCellIndexPath = IndexPath(row: self.datePickerIndexPath!.row-1, section: 1)
             
-            let cell = self.tableView.cellForRowAtIndexPath(dateCellIndexPath)
+            let cell = self.tableView.cellForRow(at: dateCellIndexPath)
             // Update the displayed date
-            cell?.detailTextLabel?.text = EKRSHelperClass.dateFormatter.stringFromDate(datePicker.date)
+            cell?.detailTextLabel?.text = EKRSHelperClass.dateFormatter.string(from: datePicker.date)
             self.displayedDate = datePicker.date
         }
     }
@@ -249,37 +249,37 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     //MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == EKTRAddTimedReminderShowSegue {
-            let repeatViewController = segue.destinationViewController as! RepeatViewController
+            let repeatViewController = segue.destination as! RepeatViewController
             var frequencyCell: UITableViewCell? = nil
             
             if self.hasInlineDatePicker {
-                frequencyCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 1))
+                frequencyCell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 1))
             } else {
-                frequencyCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 1))
+                frequencyCell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 1))
             }
             
             repeatViewController.displayedFrequency = frequencyCell?.detailTextLabel!.text
         } else if segue.identifier == EKTRAddTimedReminderUnwindSegue {
-            let titleCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0))!
+            let titleCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0))!
             let textField = titleCell.viewWithTag(EKTRAddTimedReminderTitleTag) as! UITextField
             
             
-            let dateCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1))!
-            let date = EKRSHelperClass.dateFormatter.dateFromString(dateCell.detailTextLabel!.text!)
+            let dateCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 1))!
+            let date = EKRSHelperClass.dateFormatter.date(from: dateCell.detailTextLabel!.text!)
             
             
             var frequencyCell: UITableViewCell? = nil
             if self.hasInlineDatePicker {
-                frequencyCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 1))
+                frequencyCell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 1))
             } else {
-                frequencyCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 1))
+                frequencyCell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 1))
             }
             
-            let priorityCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 2))
+            let priorityCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 2))
             let prioritySegmentControl = priorityCell?.viewWithTag(EKTRAddTimedReminderPriorityTag) as! UISegmentedControl
-            let priority = prioritySegmentControl.titleForSegmentAtIndex(prioritySegmentControl.selectedSegmentIndex)
+            let priority = prioritySegmentControl.titleForSegment(at: prioritySegmentControl.selectedSegmentIndex)
             
             
             
@@ -292,15 +292,15 @@ class AddTimedReminder: UITableViewController, UITextFieldDelegate {
     
     
     // Unwind action from the Repeat view controller
-    @IBAction func unwindToAddTimedReminders(sender: UIStoryboardSegue) {
-        let repeatViewController = sender.sourceViewController as! RepeatViewController
+    @IBAction func unwindToAddTimedReminders(_ sender: UIStoryboardSegue) {
+        let repeatViewController = sender.source as! RepeatViewController
         var frequencyCell: UITableViewCell? = nil
         
         // The frequency cell is at row 2 when the date picker is shown and at row 1, otherwise
         if self.hasInlineDatePicker {
-            frequencyCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 1))
+            frequencyCell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 1))
         } else {
-            frequencyCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 1))
+            frequencyCell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 1))
         }
         // Display the frequency value
         frequencyCell?.detailTextLabel?.text = repeatViewController.displayedFrequency

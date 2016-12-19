@@ -24,10 +24,10 @@ class EKRSHelperClass: NSObject {
     //MARK: - Date Formatter
     
     // Create a date formatter with a short date and time
-    class var dateFormatter: NSDateFormatter {
-        let myDateFormatter = NSDateFormatter()
-        myDateFormatter.dateStyle = .ShortStyle
-        myDateFormatter.timeStyle = .ShortStyle
+    class var dateFormatter: DateFormatter {
+        let myDateFormatter = DateFormatter()
+        myDateFormatter.dateStyle = .short
+        myDateFormatter.timeStyle = .short
         
         return myDateFormatter
     }
@@ -36,26 +36,27 @@ class EKRSHelperClass: NSObject {
     //MARK: - Create a Date
     
     // Create a new date by adding a given number of days to the current date
-    static func dateByAddingDays(day: Int) -> NSDate {
-        let gregorian = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
-        let dateComponents = NSDateComponents()
+    static func dateByAddingDays(_ day: Int) -> Date {
+        let gregorian = Calendar(identifier: Calendar.Identifier.gregorian)
+        var dateComponents = DateComponents()
         dateComponents.day = day
         
-        return gregorian.dateByAddingComponents(dateComponents, toDate: NSDate(), options: [])!
+        return gregorian.date(byAdding: dateComponents, to: Date())!
     }
     
     
     //MARK: - Create Alert Dialog
     
     // Return an alert with a given title and message
-    static func alertWithTitle(title: String, message: String) -> UIAlertController {
+    //@discardableResult
+    static func alert(title: String, message: String) -> UIAlertController {
         let alert = UIAlertController(title: title,
             message: message,
-            preferredStyle: .ActionSheet)
+            preferredStyle: .actionSheet)
         
         
         let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""),
-            style: .Default,
+            style: .default,
             handler: {action in})
         
         alert.addAction(defaultAction)

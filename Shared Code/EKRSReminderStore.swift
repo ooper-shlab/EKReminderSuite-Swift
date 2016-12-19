@@ -45,9 +45,9 @@ class EKRSReminderStore: NSObject {
         eventStore = EKEventStore()
         
         super.init()
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(EKRSReminderStore.storeChanged(_:)),
-            name: EKEventStoreChangedNotification,
+            name: NSNotification.Name.EKEventStoreChanged,
             object: eventStore)
     }
     
@@ -57,14 +57,14 @@ class EKRSReminderStore: NSObject {
     // Check whether application has access to the Reminders application
     // Check the authorization status of our application for Reminders
     func checkEventStoreAuthorizationStatus() {
-        let status = EKEventStore.authorizationStatusForEntityType(.Reminder)
+        let status = EKEventStore.authorizationStatus(for: .reminder)
         
         switch status {
-        case .Authorized:
+        case .authorized:
             self.accessGrantedForReminders()
-        case .NotDetermined:
+        case .notDetermined:
             self.requestEventStoreAccessForReminders()
-        case .Denied, .Restricted:
+        case .denied, .restricted:
             self.accessDeniedForReminders()
         }
     }
@@ -72,7 +72,7 @@ class EKRSReminderStore: NSObject {
     
     // Prompt the user for access to their Reminders app
     private func requestEventStoreAccessForReminders() {
-        self.eventStore.requestAccessToEntityType(.Reminder) {granted, error in
+        self.eventStore.requestAccess(to: .reminder) {granted, error in
             if granted {
                 self.accessGrantedForReminders()
             } else {
@@ -89,8 +89,8 @@ class EKRSReminderStore: NSObject {
         self.calendar = self.eventStore.defaultCalendarForNewReminders()
         
         // Notifies the listener that access was granted to Reminders
-        dispatch_async(dispatch_get_main_queue()) {
-            NSNotificationCenter.defaultCenter().postNotificationName(EKRSAccessGrantedNotification, object: self)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name(EKRSAccessGrantedNotification), object: self)
         }
     }
     
@@ -98,8 +98,8 @@ class EKRSReminderStore: NSObject {
     // Called when the user has denied or restricted access to Reminders
     private func accessDeniedForReminders() {
         // Notifies the listener that access was denied to Reminders
-        dispatch_async(dispatch_get_main_queue()) {
-            NSNotificationCenter.defaultCenter().postNotificationName(EKRSAccessDeniedNotification, object: self)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name(EKRSAccessDeniedNotification), object: self)
         }
     }
     
@@ -107,9 +107,9 @@ class EKRSReminderStore: NSObject {
     
     //MARK: - Handle EKEventStoreChangedNotification
     
-    @objc func storeChanged(notification: NSNotification) {
-        dispatch_async(dispatch_get_main_queue()) {
-            NSNotificationCenter.defaultCenter().postNotificationName(EKRSRefreshDataNotification, object: self)
+    @objc func storeChanged(_ notification: Notification) {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name(EKRSRefreshDataNotification), object: self)
         }
     }
     
@@ -117,12 +117,12 @@ class EKRSReminderStore: NSObject {
     //MARK: - Filter Reminders
     
     // Return incomplete location reminders
-    private func predicateForLocationReminders(reminders: [EKReminder]) -> [EKReminder] {
+    private func predicateForLocationReminders(_ reminders: [EKReminder]) -> [EKReminder] {
         return reminders.filter{reminder->Bool in
             var hasLocationAlarm = false
             
             for alarm in reminder.alarms ?? [] {
-                if !reminder.completed && alarm.structuredLocation != nil && (alarm.proximity == .Leave || alarm.proximity == .Enter) {
+                if !reminder.isCompleted && alarm.structuredLocation != nil && (alarm.proximity == .leave || alarm.proximity == .enter) {
                     hasLocationAlarm = true
                     break
                 }
@@ -136,16 +136,16 @@ class EKRSReminderStore: NSObject {
     
     // Fetch all incomplete reminders ending now
     // Fetch all past-due reminders
-    func fetchPastDueRemindersWithDateStarting(startDate: NSDate) {
+    func fetchPastDueRemindersWithDateStarting(_ startDate: Date) {
         // Predicate to fetch all incomplete reminders ending now in the calendar
-        let predicate = self.eventStore.predicateForIncompleteRemindersWithDueDateStarting(startDate,
-            ending: NSDate(),
+        let predicate = self.eventStore.predicateForIncompleteReminders(withDueDateStarting: startDate,
+            ending: Date(),
             calendars: [self.calendar!])
         // Fetch reminders matching the above predicate
-        self.eventStore.fetchRemindersMatchingPredicate(predicate) {reminders in
+        self.eventStore.fetchReminders(matching: predicate) {reminders in
             self.pastDueReminders = reminders ?? []
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSPastDueRemindersNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSPastDueRemindersNotification), object: self)
             }
         }
     }
@@ -156,16 +156,16 @@ class EKRSReminderStore: NSObject {
     
     // Fetch all incomplete reminders starting now and ending later
     // Fetch all upcoming reminders
-    func fetchUpcomingRemindersWithDueDate(endDate: NSDate) {
+    func fetchUpcomingRemindersWithDueDate(_ endDate: Date) {
         // Predicate to fetch all incomplete reminders starting now and ending on endDate
-        let predicate = self.eventStore.predicateForIncompleteRemindersWithDueDateStarting(NSDate(),
+        let predicate = self.eventStore.predicateForIncompleteReminders(withDueDateStarting: Date(),
             ending: endDate,
             calendars: [self.calendar!])
         // Fetch reminders matching the above predicate
-        self.eventStore.fetchRemindersMatchingPredicate(predicate) {reminders in
+        self.eventStore.fetchReminders(matching: predicate) {reminders in
             self.upcomingReminders = reminders ?? []
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSUpcomingRemindersNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSUpcomingRemindersNotification), object: self)
             }
         }
     }
@@ -175,16 +175,16 @@ class EKRSReminderStore: NSObject {
     
     // Fetch all completed reminders, which start and end within a given period
     // Fetch all completed reminders within a period
-    func fetchCompletedRemindersWithDueDateStarting(startDate: NSDate, ending endDate: NSDate) {
+    func fetchCompletedRemindersWithDueDateStarting(_ startDate: Date, ending endDate: Date) {
         // Predicate to fetch all completed reminders falling within startDate and endDate in calendar
-        let predicate = self.eventStore.predicateForCompletedRemindersWithCompletionDateStarting(startDate,
+        let predicate = self.eventStore.predicateForCompletedReminders(withCompletionDateStarting: startDate,
             ending: endDate,
             calendars: [self.calendar!])
         // Fetch reminders matching the above predicate
-        self.eventStore.fetchRemindersMatchingPredicate(predicate) {reminders in
+        self.eventStore.fetchReminders(matching: predicate) {reminders in
             self.completedReminders = reminders ?? []
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSCompletedRemindersNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSCompletedRemindersNotification), object: self)
             }
         }
     }
@@ -196,14 +196,14 @@ class EKRSReminderStore: NSObject {
     // Fetch all reminders, then use predicateForLocationReminders: to filter the result for incomplete location-based reminders
     func fetchLocationReminders() {
         // Fetch all reminders available in calendar
-        let predicate = self.eventStore.predicateForRemindersInCalendars([self.calendar!])
+        let predicate = self.eventStore.predicateForReminders(in: [self.calendar!])
         
-        self.eventStore.fetchRemindersMatchingPredicate(predicate) {reminders in
+        self.eventStore.fetchReminders(matching: predicate) {reminders in
             // Filter the reminders for location ones
             self.locationReminders = self.predicateForLocationReminders(reminders ?? [])
             
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSLocationRemindersNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSLocationRemindersNotification), object: self)
             }
         }
     }
@@ -213,8 +213,8 @@ class EKRSReminderStore: NSObject {
     
     // Mark reminder as completed
     // Use the completed property to mark a reminder as completed
-    func complete(reminder: EKReminder) {
-        reminder.completed = true
+    func complete(_ reminder: EKReminder) {
+        reminder.isCompleted = true
         // Update the reminder
         self.save(reminder)
     }
@@ -224,19 +224,19 @@ class EKRSReminderStore: NSObject {
     
     // Save reminder
     // Save the reminder to the event store
-    func save(reminder: EKReminder) {
+    func save(_ reminder: EKReminder) {
         do {
-            try self.eventStore.saveReminder(reminder, commit: true)
+            try self.eventStore.save(reminder, commit: true)
             // Notifies the listener that the operation was successful
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSRefreshDataNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSRefreshDataNotification), object: self)
             }
         } catch let error as NSError {
             // Keep track of the error message encountered
             self.errorMessage = error.localizedDescription
             // Notifies the listener that the operation failed
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSFailureNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSFailureNotification), object: self)
             }
         }
     }
@@ -246,16 +246,16 @@ class EKRSReminderStore: NSObject {
     
     // Delete reminder
     // Remove reminder from the event store
-    func remove(reminder: EKReminder) {
+    func remove(_ reminder: EKReminder) {
         do {
-            try self.eventStore.removeReminder(reminder, commit: true)
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSRefreshDataNotification, object: self)
+            try self.eventStore.remove(reminder, commit: true)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSRefreshDataNotification), object: self)
             }
         } catch let error as NSError {
             self.errorMessage = error.localizedDescription
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(EKRSFailureNotification, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Notification.Name(EKRSFailureNotification), object: self)
             }
         }
     }
@@ -264,8 +264,8 @@ class EKRSReminderStore: NSObject {
     //MARK: - Memory Management
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: EKEventStoreChangedNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name.EKEventStoreChanged,
             object: nil)
     }
 }

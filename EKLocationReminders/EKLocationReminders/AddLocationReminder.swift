@@ -26,7 +26,7 @@ class AddLocationReminder: UITableViewController, UITextFieldDelegate {
     // Location's address
     var address: String?
     // Used to pass back the user input to the Map view controller
-    var userInput: [String: AnyObject] = [:]
+    var userInput: [String: Any] = [:]
     
     @IBOutlet private weak var radiusLabel: UITextField!
     @IBOutlet private weak var titleTextField: UITextField!
@@ -44,12 +44,12 @@ class AddLocationReminder: UITableViewController, UITextFieldDelegate {
     
     //MARK: - Handle User Text Input
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // When the user presses return, take focus away from the text field so
         // that the keyboard is dismissed.
         textField.resignFirstResponder()
         if !(self.titleTextField.text?.isEmpty ?? true) && !(self.radiusLabel.text?.isEmpty ?? true) {
-            self.navigationItem.rightBarButtonItem!.enabled = true
+            self.navigationItem.rightBarButtonItem!.isEnabled = true
         }
         
         return true
@@ -59,10 +59,10 @@ class AddLocationReminder: UITableViewController, UITextFieldDelegate {
     //MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "unwindToMapViewController" {
             // Fetch the proximity value, which is either Arriving (EKAlarmProximityEnter) or Leaving (EKAlarmProximityLeave)
-            let proximity = self.proximitySegmentControl.titleForSegmentAtIndex(self.proximitySegmentControl.selectedSegmentIndex)
+            let proximity = self.proximitySegmentControl.titleForSegment(at: self.proximitySegmentControl.selectedSegmentIndex)
             // Return the entered title, proximity, and radius
             self.userInput = [EKRSTitle: self.titleTextField.text ?? "", EKRSLocationProximity: proximity ?? "", EKRSLocationRadius: Double(self.radiusLabel.text ?? "0") ?? 0.0]
         }

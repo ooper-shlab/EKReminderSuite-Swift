@@ -45,9 +45,9 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(MapViewController.handleLTBControllerNotification(_:)),
-            name: LTBAccessGrantedNotification,
+            name: NSNotification.Name(LTBAccessGrantedNotification),
             object: nil)
         
     }
@@ -58,19 +58,19 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     private func checkLocationServicesAuthorizationStatus() {
         let status = CLLocationManager.authorizationStatus()
         switch status {
-        case .AuthorizedWhenInUse:
+        case .authorizedWhenInUse:
             self.accessGrantedForLocationServices()
-        case .NotDetermined:
+        case .notDetermined:
             self.requestLocationServicesAuthorization()
-        case .Denied, .Restricted:
+        case .denied, .restricted:
             if !self.mapView.annotations.isEmpty {
                 self.mapView.removeAnnotations(self.mapView.annotations)
             }
             
-            let alert = EKRSHelperClass.alertWithTitle(NSLocalizedString("Privacy Warning", comment: ""),
+            let alert = EKRSHelperClass.alert(title: NSLocalizedString("Privacy Warning", comment: ""),
                 message: NSLocalizedString("Access was not granted for Location Services.", comment: ""))
             
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
             
         default:
             break
@@ -92,7 +92,7 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     
     //MARK: - Handle LocationTabBarController Notification
     
-    @objc func handleLTBControllerNotification(notification: NSNotification) {
+    @objc func handleLTBControllerNotification(_ notification: Notification) {
         self.accessGrantedForReminders()
     }
     
@@ -121,8 +121,8 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
         }
         
         // Locations.plist contains all data required for configuring the map's region and points of interest
-        let plistURL = NSBundle.mainBundle().URLForResource(EKLRLocationsList, withExtension: EKLRLocationsListExtension)!
-        let data = NSArray(contentsOfURL: plistURL)!
+        let plistURL = Bundle.main.url(forResource: EKLRLocationsList, withExtension: EKLRLocationsListExtension)!
+        let data = NSArray(contentsOf: plistURL)!
         
         
         self.mapView.addAnnotations(self.fetchAnnotations(data))
@@ -140,7 +140,7 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     
     //MARK: - Fetch Interest Points
     
-    private func fetchAnnotations(locations: NSArray) -> [MKAnnotation] {
+    private func fetchAnnotations(_ locations: NSArray) -> [MKAnnotation] {
         var annotations: [MKAnnotation] = []
         annotations.reserveCapacity(locations.count)
         
@@ -161,13 +161,13 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     
     //MARK: - CLLocationManagerDelegate
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        NSLog("Error: %@", error.description)
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        NSLog("Error: \(error)")
     }
     
     
     // Called when the authorization status changes for Location Services
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         // Check the authorization status and take the appropriate action
         self.checkLocationServicesAuthorizationStatus()
     }
@@ -175,13 +175,13 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     
     //MARK: - MKMapViewDelegate
     
-    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         let location = CLLocation(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude)
         let geocoder = CLGeocoder()
         
         // Reverse-geocode the current user coordinates
         geocoder.reverseGeocodeLocation(location) {placemarks, error in
-            if let placemarks = placemarks where !placemarks.isEmpty {
+            if let placemarks = placemarks, !placemarks.isEmpty {
                 let placemark = placemarks.first!
                 self.currentUserLocationAddress = "\(placemark.subThoroughfare ?? "") \(placemark.thoroughfare ?? "") \(placemark.locality ?? "")"
             }
@@ -195,8 +195,8 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     }
     
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        var pinView = self.mapView.dequeueReusableAnnotationViewWithIdentifier(kPinAnnotationViewIdentifier) as! MKPinAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var pinView = self.mapView.dequeueReusableAnnotationView(withIdentifier: kPinAnnotationViewIdentifier) as! MKPinAnnotationView?
         if pinView == nil {
             pinView = MKPinAnnotationView(annotation: annotation,
                 reuseIdentifier: kPinAnnotationViewIdentifier)
@@ -204,12 +204,12 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
             if #available(iOS 9.0, *) {
                 pinView!.pinTintColor = MKPinAnnotationView.purplePinColor()
             } else {
-                pinView!.pinColor = MKPinAnnotationColor.Purple
+                pinView!.pinColor = MKPinAnnotationColor.purple
             }
             pinView!.animatesDrop = true
             pinView!.canShowCallout = true
             
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         } else {
             pinView!.annotation = annotation
         }
@@ -218,9 +218,9 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     }
     
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         let story = UIStoryboard(name: "LocationReminders", bundle: nil)
-        let navigationController = story.instantiateViewControllerWithIdentifier("navAddLocationReminderVCID") as! UINavigationController
+        let navigationController = story.instantiateViewController(withIdentifier: "navAddLocationReminderVCID") as! UINavigationController
         
         
         let addLocationReminderViewController = navigationController.topViewController! as! AddLocationReminder
@@ -239,11 +239,11 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
         
         self.selectedAnnotation = view.annotation
         
-        self.navigationController!.presentViewController(navigationController, animated: true, completion: nil)
+        self.navigationController!.present(navigationController, animated: true, completion: nil)
     }
     
     
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
     }
     
     
@@ -254,8 +254,8 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     }
     
     
-    @IBAction func done(sender: UIStoryboardSegue) {
-        let addLocationReminderViewController = sender.sourceViewController as! AddLocationReminder
+    @IBAction func done(_ sender: UIStoryboardSegue) {
+        let addLocationReminderViewController = sender.source as! AddLocationReminder
         
         let dictionary = addLocationReminderViewController.userInput
         
@@ -277,7 +277,7 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
             structureLocation: location)
         
         
-        LocationReminderStore.sharedInstance.createLocationReminder(newLocationReminder)
+        LocationReminderStore.shared.createLocationReminder(newLocationReminder)
     }
     
     
@@ -289,8 +289,8 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: LTBAccessGrantedNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name(LTBAccessGrantedNotification),
             object: nil)
     }
     

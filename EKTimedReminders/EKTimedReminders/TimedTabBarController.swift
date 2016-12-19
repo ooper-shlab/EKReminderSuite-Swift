@@ -29,20 +29,20 @@ class TimedTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let mainQueue = NSOperationQueue.mainQueue()
-        let center = NSNotificationCenter.defaultCenter()
+        let mainQueue = OperationQueue.main
+        let center = NotificationCenter.default
         
         // Register for TimedReminderStore notifications
-        let accessGranted = center.addObserverForName(EKRSAccessGrantedNotification,
-            object: TimedReminderStore.sharedInstance,
+        let accessGranted = center.addObserver(forName: NSNotification.Name(EKRSAccessGrantedNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleRSAccessGrantedNotification(note)
         }
         
         
-        let accessDenied = center.addObserverForName(EKRSAccessDeniedNotification,
-            object: TimedReminderStore.sharedInstance,
+        let accessDenied = center.addObserver(forName: NSNotification.Name(EKRSAccessDeniedNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleRSAccessDeniedNotification(note)
@@ -50,8 +50,8 @@ class TimedTabBarController: UITabBarController {
         }
         
         
-        let refreshData = center.addObserverForName(EKRSRefreshDataNotification,
-            object: TimedReminderStore.sharedInstance,
+        let refreshData = center.addObserver(forName: NSNotification.Name(EKRSRefreshDataNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleRSRefreshDataNotification(note)
@@ -59,31 +59,31 @@ class TimedTabBarController: UITabBarController {
         
         
         
-        let upcoming = center.addObserverForName(EKRSUpcomingRemindersNotification,
-            object: TimedReminderStore.sharedInstance,
+        let upcoming = center.addObserver(forName: NSNotification.Name(EKRSUpcomingRemindersNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleRSUpcomingRemindersNotification(note)
         }
         
         
-        let pastDue = center.addObserverForName(EKRSPastDueRemindersNotification,
-            object: TimedReminderStore.sharedInstance,
+        let pastDue = center.addObserver(forName: NSNotification.Name(EKRSPastDueRemindersNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 
                 self?.handleRSPastDueRemindersNotification(note)
         }
         
-        let completed = center.addObserverForName(EKRSCompletedRemindersNotification,
-            object: TimedReminderStore.sharedInstance,
+        let completed = center.addObserver(forName: NSNotification.Name(EKRSCompletedRemindersNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleRSCompletedRemindersNotification(note)
         }
         
-        let failure = center.addObserverForName(EKRSFailureNotification,
-            object: TimedReminderStore.sharedInstance,
+        let failure = center.addObserver(forName: NSNotification.Name(EKRSFailureNotification),
+            object: TimedReminderStore.shared,
             queue: mainQueue
             ) {[weak self] note in
                 self?.handleRSFailureNotification(note)
@@ -92,25 +92,25 @@ class TimedTabBarController: UITabBarController {
         // Keep track of all the created notifications
         self.rsObservers = [accessGranted, accessDenied, refreshData, upcoming, pastDue, completed, failure]
         // Check whether EKTimedReminders has access to Reminders
-        TimedReminderStore.sharedInstance.checkEventStoreAuthorizationStatus()
+        TimedReminderStore.shared.checkEventStoreAuthorizationStatus()
     }
     
     
     //MARK: - Handle Access Granted Notification
     
     // Handle the RSAccessGrantedNotification notification
-    private func handleRSAccessGrantedNotification(notification: NSNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName(TTBAccessGrantedNotification, object: self)
+    private func handleRSAccessGrantedNotification(_ notification: Notification) {
+        NotificationCenter.default.post(name: Notification.Name(TTBAccessGrantedNotification), object: self)
         self.accessGrantedForReminders()
     }
     
     
     // Access was granted to Reminders. Fetch past-due, pending, and completed reminders
     private func accessGrantedForReminders() {
-        TimedReminderStore.sharedInstance.fetchUpcomingRemindersWithDueDate(EKRSHelperClass.dateByAddingDays(7))
-        TimedReminderStore.sharedInstance.fetchPastDueRemindersWithDateStarting(EKRSHelperClass.dateByAddingDays(-7))
+        TimedReminderStore.shared.fetchUpcomingRemindersWithDueDate(EKRSHelperClass.dateByAddingDays(7))
+        TimedReminderStore.shared.fetchPastDueRemindersWithDateStarting(EKRSHelperClass.dateByAddingDays(-7))
         
-        TimedReminderStore.sharedInstance.fetchCompletedRemindersWithDueDateStarting(EKRSHelperClass.dateByAddingDays(-7),
+        TimedReminderStore.shared.fetchCompletedRemindersWithDueDateStarting(EKRSHelperClass.dateByAddingDays(-7),
             ending: EKRSHelperClass.dateByAddingDays(7))
     }
     
@@ -118,17 +118,17 @@ class TimedTabBarController: UITabBarController {
     //MARK: - Handle Access Denied Notification
     
     // Handle the RSAccessDeniedNotification notification
-    private func handleRSAccessDeniedNotification(notification: NSNotification) {
-        let alert = EKRSHelperClass.alertWithTitle(NSLocalizedString("Access Status", comment: ""),
+    private func handleRSAccessDeniedNotification(_ notification: Notification) {
+        let alert = EKRSHelperClass.alert(title: NSLocalizedString("Access Status", comment: ""),
             message: NSLocalizedString("Access was not granted for Reminders.", comment: ""))
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
     //MARK: - Handle Refresh Data Notification
     
     // Handle the RSRefreshDataNotification notification
-    private func handleRSRefreshDataNotification(notification: NSNotification) {
+    private func handleRSRefreshDataNotification(_ notification: Notification) {
         self.accessGrantedForReminders()
     }
     
@@ -137,51 +137,51 @@ class TimedTabBarController: UITabBarController {
     
     // Handle the RSFailureNotification notification.
     // An error has occured. Display an alert with the error message.
-    private func handleRSFailureNotification(notification: NSNotification) {
+    private func handleRSFailureNotification(_ notification: Notification) {
         let myNotification = notification.object as! TimedReminderStore?
         
-        let alert = EKRSHelperClass.alertWithTitle(NSLocalizedString("Status", comment: ""),
+        let alert = EKRSHelperClass.alert(title: NSLocalizedString("Status", comment: ""),
             message: myNotification?.errorMessage ?? "")
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
     //MARK: - Handle Upcoming Reminders Notification
     
     // Handle the RSUpcomingRemindersNotification notification
-    private func handleRSUpcomingRemindersNotification(notification: NSNotification) {
+    private func handleRSUpcomingRemindersNotification(_ notification: Notification) {
         let myNotification = notification.object as! TimedReminderStore?
         
         // Update the number of upcoming reminders in the tab bar
         self.tabBar.items?[0].badgeValue = String(myNotification?.upcomingReminders.count ?? 0)
         // Notify the listener that there are past-due reminders
-        NSNotificationCenter.defaultCenter().postNotificationName(TTBUpcomingRemindersNotification, object: self)
+        NotificationCenter.default.post(name: Notification.Name(TTBUpcomingRemindersNotification), object: self)
     }
     
     
     //MARK: - Handle Past-Due Reminders Notification
     
     // Handle the RSPastDueRemindersNotification notification
-    private func handleRSPastDueRemindersNotification(notification: NSNotification) {
+    private func handleRSPastDueRemindersNotification(_ notification: Notification) {
         let myNotification = notification.object as! TimedReminderStore?
         
         // Update the number of past-due reminders in the tab bar
         self.tabBar.items?[1].badgeValue = String(myNotification?.pastDueReminders.count ?? 0)
         // Notify the listener that there are past-due reminders
-        NSNotificationCenter.defaultCenter().postNotificationName(TTBPastDueRemindersNotification, object: self)
+        NotificationCenter.default.post(name: Notification.Name(TTBPastDueRemindersNotification), object: self)
     }
     
     
     //MARK: - Handle Completed Reminders Notification
     
     // Handle the RSCompletedRemindersNotification notification
-    private func handleRSCompletedRemindersNotification(notification: NSNotification) {
+    private func handleRSCompletedRemindersNotification(_ notification: Notification) {
         let myNotification = notification.object as! TimedReminderStore?
         
         // Update the number of completed reminders in the tab bar
         self.tabBar.items?[2].badgeValue = String(myNotification?.completedReminders.count ?? 0)
         // Notify the listener that there are completed reminders
-        NSNotificationCenter.defaultCenter().postNotificationName(TTBCompletedRemindersNotification, object: self)
+        NotificationCenter.default.post(name: Notification.Name(TTBCompletedRemindersNotification), object: self)
     }
     
     
@@ -196,7 +196,7 @@ class TimedTabBarController: UITabBarController {
     deinit {
         // Unregister for all observers saved in rsObservers
         for anObserver in self.rsObservers {
-            NSNotificationCenter.defaultCenter().removeObserver(anObserver)
+            NotificationCenter.default.removeObserver(anObserver)
         }
     }
 }

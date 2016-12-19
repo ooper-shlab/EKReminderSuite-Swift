@@ -20,14 +20,14 @@ import EventKit
 @objc(LocationReminderStore)
 class LocationReminderStore: EKRSReminderStore {
     
-    static var sharedInstance: LocationReminderStore = LocationReminderStore()
+    static var shared: LocationReminderStore = LocationReminderStore()
     
     
     //MARK: -
     //MARK: Add Location Reminder
     
     // Create a location-based reminder
-    func createLocationReminder(reminder: LocationReminder) {
+    func createLocationReminder(_ reminder: LocationReminder) {
         let myReminder = EKReminder(eventStore: self.eventStore)
         myReminder.title = reminder.title ?? ""
         myReminder.calendar = self.calendar!

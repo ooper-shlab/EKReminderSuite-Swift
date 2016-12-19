@@ -32,9 +32,9 @@ class PastDueReminders: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notification
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(PastDueReminders.handleTTBPastDueRemindersNotification(_:)),
-            name: TTBPastDueRemindersNotification,
+            name: NSNotification.Name(TTBPastDueRemindersNotification),
             object: nil)
         
     }
@@ -43,34 +43,34 @@ class PastDueReminders: UITableViewController {
     //MARK: - Handle TimedTabBarController Notification
     
     // Update the UI
-    @objc func handleTTBPastDueRemindersNotification(notificaiton: NSNotification) {
-        self.pastDue = TimedReminderStore.sharedInstance.pastDueReminders
+    @objc func handleTTBPastDueRemindersNotification(_ notificaiton: Notification) {
+        self.pastDue = TimedReminderStore.shared.pastDueReminders
         self.tableView.reloadData()
     }
     
     
     //MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
         return self.pastDue.count
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let reminder = self.pastDue[indexPath.row]
         
-        let gregorian = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+        let gregorian = Calendar(identifier: Calendar.Identifier.gregorian)
         
         // Fetch the date by which this reminder should be completed
-        let date = gregorian.dateFromComponents(reminder.dueDateComponents!)!
-        let formattedDateString = EKRSHelperClass.dateFormatter.stringFromDate(date)
+        let date = gregorian.date(from: reminder.dueDateComponents!)!
+        let formattedDateString = EKRSHelperClass.dateFormatter.string(from: date)
         
         // Fetch the recurrence rule
         let recurrence = reminder.recurrenceRules
         let rule = recurrence?.first
         
         // Create a string comprising of the date and frequency
-        let dateAndFrequency = (recurrence?.count ?? 0 > 0) ? "\(formattedDateString),\(rule?.nameMatchingFrequency(rule?.frequency ?? .Daily) ?? "")" : formattedDateString
+        let dateAndFrequency = (recurrence?.count ?? 0 > 0) ? "\(formattedDateString),\(rule?.nameMatchingFrequency(rule?.frequency ?? .daily) ?? "")" : formattedDateString
         
         let myCell = cell as! CustomCell
         myCell.checkBox.checked = false
@@ -80,17 +80,17 @@ class PastDueReminders: UITableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCellWithIdentifier(EKTRPastDueRemindersCellID, forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: EKTRPastDueRemindersCellID, for: indexPath)
     }
     
     
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Find the cell being touched
-        let targetCustomCell = tableView.cellForRowAtIndexPath(indexPath) as! CustomCell
+        let targetCustomCell = tableView.cellForRow(at: indexPath) as! CustomCell
         // Add a checkmark for this reminder
         targetCustomCell.checkBox.checked = !targetCustomCell.checkBox.checked
         // Let's mark the selected reminder as completed
@@ -100,12 +100,12 @@ class PastDueReminders: UITableViewController {
     //MARK: - Managing Selections
     
     @IBAction func checkBoxTapped(_: AnyObject, forEvent event: UIEvent) {
-        let touches = event.allTouches()
+        let touches = event.allTouches
         let touch = touches!.first!
-        let currentTouchPosition = touch.locationInView(self.tableView)
+        let currentTouchPosition = touch.location(in: self.tableView)
         
         // Lookup the index path of the cell whose checkbox was modified.
-        if let indexPath = self.tableView.indexPathForRowAtPoint(currentTouchPosition) {
+        if let indexPath = self.tableView.indexPathForRow(at: currentTouchPosition) {
             
             // Let's mark the selected reminder as completed
             self.completeReminderIndexPath(indexPath)
@@ -114,13 +114,13 @@ class PastDueReminders: UITableViewController {
     
     
     // Call TimedReminderStore to mark the selected reminder as completed
-    private func completeReminderIndexPath(indexPath: NSIndexPath) {
+    private func completeReminderIndexPath(_ indexPath: IndexPath) {
         let reminder = self.pastDue[indexPath.row]
         // Remove the selected reminder from the UI
         self.pastDue = self.pastDue.filter{$0 !== reminder}
-        self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        self.tableView.deleteRows(at: [indexPath], with: .fade)
         // Tell TimedReminderStore to mark the selected reminder as completed
-        TimedReminderStore.sharedInstance.complete(reminder)
+        TimedReminderStore.shared.complete(reminder)
     }
     
     
@@ -133,8 +133,8 @@ class PastDueReminders: UITableViewController {
     
     deinit {
         // Unregister for TimedTabBarController notification
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: TTBPastDueRemindersNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name(TTBPastDueRemindersNotification),
             object: nil)
     }
     

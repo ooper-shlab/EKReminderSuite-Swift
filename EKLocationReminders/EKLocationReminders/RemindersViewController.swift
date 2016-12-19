@@ -28,9 +28,9 @@ class RemindersViewController: UITableViewController {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(RemindersViewController.handleLTBControllerNotification(_:)),
-            name: LTBRemindersFetchedNotification,
+            name: NSNotification.Name(LTBRemindersFetchedNotification),
             object: nil)
         
     }
@@ -39,21 +39,21 @@ class RemindersViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .Plain, target: self, action: #selector(RemindersViewController.deleteAll(_:)))]
+        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .plain, target: self, action: #selector(RemindersViewController.deleteAll(_:)))]
     }
     
     
     @objc func deleteAll(_: AnyObject) {
         let alert = UIAlertController(title: nil,
             message: NSLocalizedString("Are you sure you want to remove all these reminders?", comment: ""),
-            preferredStyle: .ActionSheet)
+            preferredStyle: .actionSheet)
         
         
         let OKAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""),
-            style: .Default
+            style: .default
             ) {action in
                 for reminder in self.reminders {
-                    LocationReminderStore.sharedInstance.remove(reminder)
+                    LocationReminderStore.shared.remove(reminder)
                 }
                 
                 self.tableView.reloadData()
@@ -61,23 +61,23 @@ class RemindersViewController: UITableViewController {
         }
         alert.addAction(OKAction)
         
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .Default, handler: nil)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .default, handler: nil)
         alert.addAction(cancelAction)
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
     private func showOrHideEditButton() {
         // Show the Edit button if there are incomplete location-based reminders and hide it, otherwise.
-        self.navigationItem.leftBarButtonItem = !self.reminders.isEmpty ? self.editButtonItem() : nil
+        self.navigationItem.leftBarButtonItem = !self.reminders.isEmpty ? self.editButtonItem : nil
     }
     
     
     //MARK: - Handle LocationTabBarController Notification
     
-    @objc func handleLTBControllerNotification(notification: NSNotification) {
-        let result = LocationReminderStore.sharedInstance.locationReminders
+    @objc func handleLTBControllerNotification(_ notification: Notification) {
+        let result = LocationReminderStore.shared.locationReminders
         
         // Refresh the UI
         if self.reminders != result {
@@ -90,13 +90,13 @@ class RemindersViewController: UITableViewController {
     
     //MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
         return self.reminders.count
     }
     
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let reminder = self.reminders[indexPath.row]
         let alarm = reminder.alarms?.first
         
@@ -110,41 +110,41 @@ class RemindersViewController: UITableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCellWithIdentifier(EKLRRemindersCellID, forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: EKLRRemindersCellID, for: indexPath)
     }
     
     
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
             let reminder = self.reminders[indexPath.row]
             
             self.reminders = self.reminders.filter{$0 !== reminder}
             // Update the table view
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            tableView.deleteRows(at: [indexPath], with: .fade)
             
-            LocationReminderStore.sharedInstance.remove(reminder)
+            LocationReminderStore.shared.remove(reminder)
         }
     }
     
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .Delete
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
     }
     
     
     //MARK: - UITableView
     
-    override func setEditing(editing: Bool, animated: Bool) {
+    override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
         // Remove the Edit button if there are no reminders
         if self.reminders.isEmpty {
             self.navigationItem.leftBarButtonItem = nil
         }
-        self.navigationController!.toolbarHidden = !editing
+        self.navigationController!.isToolbarHidden = !editing
     }
     
     
@@ -156,8 +156,8 @@ class RemindersViewController: UITableViewController {
     
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: LTBRemindersFetchedNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name(LTBRemindersFetchedNotification),
             object: nil)
     }
     

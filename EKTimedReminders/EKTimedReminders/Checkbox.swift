@@ -28,19 +28,19 @@ class Checkbox: UIControl {
     
     
     //  This method is overridden to draw the control using Quartz2D.
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         
         let size = min(self.bounds.size.width, self.bounds.size.height)
-        var transform = CGAffineTransformIdentity
+        var transform = CGAffineTransform.identity
         
         // Account for non-square frames.
         if self.bounds.size.width < self.bounds.size.height {
             // Vertical Center
-            transform = CGAffineTransformMakeTranslation(0, (self.bounds.size.height - size)/2)
+            transform = CGAffineTransform(translationX: 0, y: (self.bounds.size.height - size)/2)
         } else if self.bounds.size.width > self.bounds.size.height {
             // Horizontal Center
-            transform = CGAffineTransformMakeTranslation((self.bounds.size.width - size)/2, 0)
+            transform = CGAffineTransform(translationX: (self.bounds.size.width - size)/2, y: 0)
         }
         
         // Draw the checkbox
@@ -48,12 +48,12 @@ class Checkbox: UIControl {
             let strokeWidth = 0.068359375 * size
             let checkBoxInset = 0.171875 * size
             
-            let checkboxRect = CGRectMake(checkBoxInset, checkBoxInset, size - checkBoxInset*2, size - checkBoxInset*2)
+            let checkboxRect = CGRect(x: checkBoxInset, y: checkBoxInset, width: size - checkBoxInset*2, height: size - checkBoxInset*2)
             let checkboxPath = UIBezierPath(rect: checkboxRect)
             
-            checkboxPath.applyTransform(transform)
+            checkboxPath.apply(transform)
             
-            self.tintColor = UIColor.blackColor()
+            self.tintColor = .black
             self.tintColor.setStroke()
             
             checkboxPath.lineWidth = strokeWidth
@@ -62,43 +62,38 @@ class Checkbox: UIControl {
         }
         
         // Draw the checkmark if self.checked==YES
-        if self.checked {
+        if self.checked, let context = context {
             // The checkmark is drawn as a bezier path using Quartz2D.
             // The control points for this path are stored (hardcoded) as normalized
             // values so that the path can be accurately reconstructed at any size.
             
             // A small macro to scale the normalized control points for the
             // checkmark bezier path to the size of the control.
-            func P(POINT: CGFloat) -> CGFloat {return POINT * size}
+            func P(_ POINT: CGFloat) -> CGFloat {return POINT * size}
             
-            CGContextSetGrayFillColor(context, 0.0, 1.0)
-            CGContextConcatCTM(context, transform)
+            context.setFillColor(gray: 0.0, alpha: 1.0)
+            context.concatenate(transform)
             
-            CGContextBeginPath(context)
-            CGContextMoveToPoint(context,
-                P(0.304), P(0.425))
-            CGContextAddLineToPoint(context, P(0.396), P(0.361))
-            CGContextAddCurveToPoint(context,
-                P(0.396), P(0.361),
-                P(0.453), P(0.392),
-                P(0.5), P(0.511))
-            CGContextAddCurveToPoint(context,
-                P(0.703), P(0.181),
-                P(0.988), P(0.015),
-                P(0.988), P(0.015))
-            CGContextAddLineToPoint(context, P(0.998), P(0.044))
-            CGContextAddCurveToPoint(context,
-                P(0.998), P(0.044),
-                P(0.769), P(0.212),
-                P(0.558), P(0.605))
-            CGContextAddLineToPoint(context, P(0.458), P(0.681))
-            CGContextAddCurveToPoint(context,
-                P(0.365), P(0.451),
-                P(0.304), P(0.425),
-                P(0.302), P(0.425))
-            CGContextClosePath(context)
+            context.beginPath()
+            context.move(to: CGPoint(x: P(0.304), y: P(0.425)))
+            context.addLine(to: CGPoint(x: P(0.396), y: P(0.361)))
+            context.addCurve(to: CGPoint(x: P(0.396), y: P(0.361)),
+                              control1: CGPoint(x: P(0.453), y: P(0.392)),
+                              control2: CGPoint(x: P(0.5), y: P(0.511)))
+            context.addCurve(to: CGPoint(x: P(0.703), y: P(0.181)),
+                             control1: CGPoint(x: P(0.988), y: P(0.015)),
+                             control2: CGPoint(x: P(0.988), y: P(0.015)))
+            context.addLine(to: CGPoint(x: P(0.998), y: P(0.044)))
+            context.addCurve(to: CGPoint(x: P(0.998), y: P(0.044)),
+                             control1: CGPoint(x: P(0.769), y: P(0.212)),
+                             control2: CGPoint(x: P(0.558), y: P(0.605)))
+            context.addLine(to: CGPoint(x: P(0.458), y: P(0.681)))
+            context.addCurve(to: CGPoint(x: P(0.365), y: P(0.451)),
+                             control1: CGPoint(x: P(0.304), y: P(0.425)),
+                             control2: CGPoint(x: P(0.302), y: P(0.425)))
+            context.closePath()
             
-            CGContextFillPath(context)
+            context.fillPath()
             
         }
     }
@@ -107,7 +102,7 @@ class Checkbox: UIControl {
     //MARK: - Control Methods
     
     // Custom implementation of the setter for the 'checked' property.
-    private func didSetChecked(_checked: Bool) {
+    private func didSetChecked(_ _checked: Bool) {
         if checked != _checked {
             
             // Flag ourself as needing to be redrawn.
@@ -128,47 +123,47 @@ class Checkbox: UIControl {
     //  the underlying UIEvent when their associated IBActions are invoked.
     //  This method functions identically to -sendActionsForControlEvents:
     //  but accepts a UIEvent that is sent with the action messages.
-    func sendActionsForControlEvents(controlEvents: UIControlEvents, withEvent event: UIEvent?) {
-        let allTargets = self.allTargets()
+    func sendActionsForControlEvents(_ controlEvents: UIControlEvents, withEvent event: UIEvent?) {
+        let allTargets = self.allTargets
         
         for target in allTargets {
-            let actionsForTarget = self.actionsForTarget(target, forControlEvent: controlEvents)
+            let actionsForTarget = self.actions(forTarget: target, forControlEvent: controlEvents)
             
             // Actions are returned as NSString objects, where each string is the
             // selector for the action.
             for action in actionsForTarget ?? [] {
                 let selector = Selector(action)
-                self.sendAction(selector, to: target, forEvent: event)
+                self.sendAction(selector, to: target, for: event)
             }
         }
     }
     
     
     //  If you override one of the touch event callbacks, you should override all of them.
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     }
     
     
     //  If you override one of the touch event callbacks, you should override all of them.
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
     }
     
     
     //  This is the touch callback we are interested in.  If there is a touch inside
     //  our bounds, toggle our checked state and notify our target of the change.
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if touches.first!.tapCount == 1 {
             // Toggle our state.
             self.checked = !self.checked
             
             // Notify our target (if we have one) of the change.
-            self.sendActionsForControlEvents(.ValueChanged, withEvent: event)
+            self.sendActionsForControlEvents(.valueChanged, withEvent: event)
         }
     }
     
     
     //  If you override one of the touch event callbacks, you should override all of them.
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
     }
     
     

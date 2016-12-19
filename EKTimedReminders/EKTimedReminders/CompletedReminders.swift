@@ -32,9 +32,9 @@ class CompletedReminders: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notification
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(CompletedReminders.handleTTBCompletedRemindersNotification(_:)),
-            name: TTBCompletedRemindersNotification,
+            name: NSNotification.Name(TTBCompletedRemindersNotification),
             object: nil)
         
     }
@@ -43,27 +43,27 @@ class CompletedReminders: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .Plain, target: self, action: #selector(CompletedReminders.deleteAll(_:)))]
+        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .plain, target: self, action: #selector(CompletedReminders.deleteAll(_:)))]
     }
     
     
     func showOrHideEditButton() {
         // Show the Edit button if there are complete timed-based reminders and hide it, otherwise.
-        self.navigationItem.leftBarButtonItem = !self.completed.isEmpty ? self.editButtonItem() : nil
+        self.navigationItem.leftBarButtonItem = !self.completed.isEmpty ? self.editButtonItem : nil
     }
     
     
     @objc func deleteAll(_: AnyObject) {
         let alert = UIAlertController(title: nil,
             message: NSLocalizedString("Are you sure you want to remove all these reminders?", comment: ""),
-            preferredStyle: .ActionSheet)
+            preferredStyle: .actionSheet)
         
         
         let OKAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""),
-            style: .Default
+            style: .default
             ) {action in
                 for reminder in self.completed {
-                    TimedReminderStore.sharedInstance.remove(reminder)
+                    TimedReminderStore.shared.remove(reminder)
                 }
                 
                 self.tableView.reloadData()
@@ -71,18 +71,18 @@ class CompletedReminders: UITableViewController {
         }
         alert.addAction(OKAction)
         
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .Default, handler: nil)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .default, handler: nil)
         alert.addAction(cancelAction)
         
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     
     //MARK: - Handle TimedTabBarController Notification
     
     // Refresh the UI with complete timed-based reminders and enable the Edit button
-    @objc func handleTTBCompletedRemindersNotification(notification: NSNotification) {
-        let result = TimedReminderStore.sharedInstance.completedReminders
+    @objc func handleTTBCompletedRemindersNotification(_ notification: Notification) {
+        let result = TimedReminderStore.shared.completedReminders
         if self.completed != result {
             self.completed = result
             self.tableView.reloadData()
@@ -93,59 +93,59 @@ class CompletedReminders: UITableViewController {
     
     //MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
         return self.completed.count
     }
     
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let reminder = self.completed[indexPath.row]
         
         // Display the reminder's title
         cell.textLabel!.text = reminder.title
         // Display the reminder's completion date
-        cell.detailTextLabel!.text = EKRSHelperClass.dateFormatter.stringFromDate(reminder.completionDate!)
+        cell.detailTextLabel!.text = EKRSHelperClass.dateFormatter.string(from: reminder.completionDate!)
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCellWithIdentifier(EKTRCompletedRemindersCellID, forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: EKTRCompletedRemindersCellID, for: indexPath)
     }
     
     
     // Used to delete a reminder
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
             let reminder = self.completed[indexPath.row]
             
             // Remove the selected reminder from the UI
             self.completed = self.completed.filter{$0 !== reminder}
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            tableView.deleteRows(at: [indexPath], with: .fade)
             
             // Called to remove the selected reminder from event store
-            TimedReminderStore.sharedInstance.remove(reminder)
+            TimedReminderStore.shared.remove(reminder)
         }
     }
     
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return .Delete
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .delete
     }
     
     
     //MARK: - UITableView
     
-    override func setEditing(editing: Bool, animated: Bool) {
+    override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
         // Remove the Edit button if there are no reminders
         if self.completed.isEmpty {
             self.navigationItem.leftBarButtonItem = nil
         }
-        self.navigationController!.toolbarHidden = !editing
+        self.navigationController!.isToolbarHidden = !editing
     }
     
     
@@ -158,8 +158,8 @@ class CompletedReminders: UITableViewController {
     
     deinit {
         // Unregister for TimedTabBarController notification
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: TTBCompletedRemindersNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name(TTBCompletedRemindersNotification),
             object: nil)
     }
     

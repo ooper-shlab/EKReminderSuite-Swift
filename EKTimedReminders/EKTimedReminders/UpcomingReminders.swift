@@ -35,15 +35,15 @@ class UpcomingReminders: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notifications
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(UpcomingReminders.handleTTBAccessGrantedNotification(_:)),
-            name: TTBAccessGrantedNotification,
+            name: NSNotification.Name(TTBAccessGrantedNotification),
             object: nil)
         
         
-        NSNotificationCenter.defaultCenter().addObserver(self,
+        NotificationCenter.default.addObserver(self,
             selector: #selector(UpcomingReminders.handleTTBUpcomingRemindersNotification(_:)),
-            name: TTBUpcomingRemindersNotification,
+            name: NSNotification.Name(TTBUpcomingRemindersNotification),
             object: nil)
         
     }
@@ -52,34 +52,34 @@ class UpcomingReminders: UITableViewController {
     //MARK: - Handle TimedTabBarController Notifications
     
     // Enable the addButton button when access was granted to Reminders
-    @objc func handleTTBAccessGrantedNotification(_: NSNotification) {
-        self.addButton.enabled = true
+    @objc func handleTTBAccessGrantedNotification(_: Notification) {
+        self.addButton.isEnabled = true
     }
     
     
     // Refresh the UI with all upcoming reminders
-    @objc func handleTTBUpcomingRemindersNotification(_: NSNotification) {
+    @objc func handleTTBUpcomingRemindersNotification(_: Notification) {
         // Refresh the UI with all upcoming reminders
-        self.upcoming = TimedReminderStore.sharedInstance.upcomingReminders
+        self.upcoming = TimedReminderStore.shared.upcomingReminders
         self.tableView.reloadData()
     }
     
     
     //MARK: - UITableViewDataSource
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Return the number of rows in the section.
         return self.upcoming.count
     }
     
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let reminder = self.upcoming[indexPath.row]
-        let gregorian = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+        let gregorian = Calendar(identifier: Calendar.Identifier.gregorian)
         
         // Fetch the date by which the reminder should be completed
-        let date = gregorian.dateFromComponents(reminder.dueDateComponents!)
-        let formattedDateString = EKRSHelperClass.dateFormatter.stringFromDate(date!)
+        let date = gregorian.date(from: reminder.dueDateComponents!)
+        let formattedDateString = EKRSHelperClass.dateFormatter.string(from: date!)
         var frequency: String = ""
         
         // If the reminder is a recurring one, only show its first recurrence rule
@@ -106,17 +106,17 @@ class UpcomingReminders: UITableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return tableView.dequeueReusableCellWithIdentifier(EKTRUpcomingRemindersCellID, forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: EKTRUpcomingRemindersCellID, for: indexPath)
     }
     
     
     //MARK: - UITableViewDelegate
     
     // Called when tapping a reminder. Briefly select its checkbox, then remove this reminder.
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Find the cell being touched
-        let targetCustomCell = tableView.cellForRowAtIndexPath(indexPath) as! CustomCell
+        let targetCustomCell = tableView.cellForRow(at: indexPath) as! CustomCell
         // Add a checkmarck for this reminder
         targetCustomCell.checkBox.checked = !targetCustomCell.checkBox.checked
         // Let's mark the selected reminder as completed
@@ -133,10 +133,10 @@ class UpcomingReminders: UITableViewController {
     
     
     // Called when tapping the Done button in the AddTimedReminder view controller
-    @IBAction func done(sender: UIStoryboardSegue) {
-        let addTimedReminder = sender.sourceViewController as! AddTimedReminder
+    @IBAction func done(_ sender: UIStoryboardSegue) {
+        let addTimedReminder = sender.source as! AddTimedReminder
         // Called to create a timed-based reminder
-        TimedReminderStore.sharedInstance.createTimedReminder(addTimedReminder.reminder!)
+        TimedReminderStore.shared.createTimedReminder(addTimedReminder.reminder!)
     }
     
     
@@ -144,12 +144,12 @@ class UpcomingReminders: UITableViewController {
     
     // Called when tapping a checkbox. Briefly select it, then remove its associated reminder.
     @IBAction func checkBoxTapped(_: AnyObject, forEvent event: UIEvent) {
-        let touches = event.allTouches()!
+        let touches = event.allTouches!
         let touch = touches.first!
-        let currentTouchPosition = touch.locationInView(self.tableView)
+        let currentTouchPosition = touch.location(in: self.tableView)
         
         // Lookup the index path of the cell whose checkbox was modified.
-        if let indexPath = self.tableView.indexPathForRowAtPoint(currentTouchPosition) {
+        if let indexPath = self.tableView.indexPathForRow(at: currentTouchPosition) {
             
             // Let's mark the selected reminder as completed
             self.completeReminderAtIndexPath(indexPath)
@@ -158,13 +158,13 @@ class UpcomingReminders: UITableViewController {
     
     
     // Call TimedReminderStore to mark the selected reminder as completed
-    private func completeReminderAtIndexPath(indexPath: NSIndexPath) {
+    private func completeReminderAtIndexPath(_ indexPath: IndexPath) {
         let reminder = self.upcoming[indexPath.row]
         // Remove the selected reminder from the UI
         self.upcoming = self.upcoming.filter{$0 !== reminder}
-        self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        self.tableView.deleteRows(at: [indexPath], with: .fade)
         // Tell TimedReminderStore to mark the selected reminder as completed
-        TimedReminderStore.sharedInstance.complete(reminder)
+        TimedReminderStore.shared.complete(reminder)
     }
     
     
@@ -177,12 +177,12 @@ class UpcomingReminders: UITableViewController {
     
     deinit {
         // Unregister for TimedTabBarController notifications
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: TTBAccessGrantedNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name(TTBAccessGrantedNotification),
             object: nil)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: TTBUpcomingRemindersNotification,
+        NotificationCenter.default.removeObserver(self,
+            name: NSNotification.Name(TTBUpcomingRemindersNotification),
             object: nil)
     }
     
