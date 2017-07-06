@@ -111,7 +111,7 @@ class LocationTabBarController: UITabBarController {
     // Handle the EKRSFailureNotification notification. Display the error message encountered
     private func handleEKRSFailureNotification(_ notification: Notification) {
         let myNotification = notification.object as! LocationReminderStore
-        EKRSHelperClass.alert(title: NSLocalizedString("Status", comment: ""),
+        _ = EKRSHelperClass.alert(title: NSLocalizedString("Status", comment: ""),
             message: myNotification.errorMessage!) //### Just creating an alert without showing it...
     }
     
