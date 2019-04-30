@@ -33,7 +33,7 @@ class CompletedReminders: UITableViewController {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notification
         NotificationCenter.default.addObserver(self,
-            selector: #selector(CompletedReminders.handleTTBCompletedRemindersNotification(_:)),
+            selector: #selector(handleTTBCompletedRemindersNotification(_:)),
             name: NSNotification.Name(TTBCompletedRemindersNotification),
             object: nil)
         
@@ -43,7 +43,7 @@ class CompletedReminders: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .plain, target: self, action: #selector(CompletedReminders.deleteAll(_:)))]
+        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .plain, target: self, action: #selector(deleteAll(_:)))]
     }
     
     
@@ -115,7 +115,7 @@ class CompletedReminders: UITableViewController {
     
     
     // Used to delete a reminder
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = self.completed[indexPath.row]
             
@@ -131,7 +131,7 @@ class CompletedReminders: UITableViewController {
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
     

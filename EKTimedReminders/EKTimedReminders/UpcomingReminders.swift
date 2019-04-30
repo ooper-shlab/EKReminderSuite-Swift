@@ -36,13 +36,13 @@ class UpcomingReminders: UITableViewController {
         super.init(coder: aDecoder)
         // Register for TimedTabBarController notifications
         NotificationCenter.default.addObserver(self,
-            selector: #selector(UpcomingReminders.handleTTBAccessGrantedNotification(_:)),
+            selector: #selector(handleTTBAccessGrantedNotification(_:)),
             name: NSNotification.Name(TTBAccessGrantedNotification),
             object: nil)
         
         
         NotificationCenter.default.addObserver(self,
-            selector: #selector(UpcomingReminders.handleTTBUpcomingRemindersNotification(_:)),
+            selector: #selector(handleTTBUpcomingRemindersNotification(_:)),
             name: NSNotification.Name(TTBUpcomingRemindersNotification),
             object: nil)
         

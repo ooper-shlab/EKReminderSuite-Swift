@@ -46,7 +46,7 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         NotificationCenter.default.addObserver(self,
-            selector: #selector(MapViewController.handleLTBControllerNotification(_:)),
+            selector: #selector(handleLTBControllerNotification(_:)),
             name: NSNotification.Name(LTBAccessGrantedNotification),
             object: nil)
         
@@ -189,7 +189,7 @@ class MapViewController : UIViewController, CLLocationManagerDelegate, MKMapView
         
         // Create a region using the current user location
         var region = MKCoordinateRegion()
-        region.span = MKCoordinateSpanMake(EKLRRegionDelta, EKLRRegionDelta)
+        region.span = MKCoordinateSpan(latitudeDelta: EKLRRegionDelta, longitudeDelta: EKLRRegionDelta)
         region.center = CLLocationCoordinate2DMake(userLocation.location?.coordinate.latitude ?? 0.0, userLocation.location?.coordinate.longitude ?? 0.0)
         self.mapView.setRegion(region, animated: true)
     }

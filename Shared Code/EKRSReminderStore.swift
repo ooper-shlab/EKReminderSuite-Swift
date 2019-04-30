@@ -46,7 +46,7 @@ class EKRSReminderStore: NSObject {
         
         super.init()
         NotificationCenter.default.addObserver(self,
-            selector: #selector(EKRSReminderStore.storeChanged(_:)),
+            selector: #selector(storeChanged(_:)),
             name: NSNotification.Name.EKEventStoreChanged,
             object: eventStore)
     }
@@ -66,6 +66,8 @@ class EKRSReminderStore: NSObject {
             self.requestEventStoreAccessForReminders()
         case .denied, .restricted:
             self.accessDeniedForReminders()
+        @unknown default:
+            break
         }
     }
     

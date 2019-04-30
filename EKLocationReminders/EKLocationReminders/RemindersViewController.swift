@@ -29,7 +29,7 @@ class RemindersViewController: UITableViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         NotificationCenter.default.addObserver(self,
-            selector: #selector(RemindersViewController.handleLTBControllerNotification(_:)),
+            selector: #selector(handleLTBControllerNotification(_:)),
             name: NSNotification.Name(LTBRemindersFetchedNotification),
             object: nil)
         
@@ -39,7 +39,7 @@ class RemindersViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .plain, target: self, action: #selector(RemindersViewController.deleteAll(_:)))]
+        self.toolbarItems = [UIBarButtonItem(title: NSLocalizedString("Delete All", comment: ""), style: .plain, target: self, action: #selector(deleteAll(_:)))]
     }
     
     
@@ -115,7 +115,7 @@ class RemindersViewController: UITableViewController {
     }
     
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = self.reminders[indexPath.row]
             
@@ -130,7 +130,7 @@ class RemindersViewController: UITableViewController {
     
     //MARK: - UITableViewDelegate
     
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
     

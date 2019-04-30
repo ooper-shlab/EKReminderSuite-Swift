@@ -105,7 +105,7 @@ class RepeatViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let indexOfDisplayedFrequency = self.frequencies.index{$0 == self.currentFrequencyOption}!
+        let indexOfDisplayedFrequency = self.frequencies.firstIndex{$0 == self.currentFrequencyOption}!
         
         // Check whether the same row was selected and return, if it was.
         if indexOfDisplayedFrequency == indexPath.row {

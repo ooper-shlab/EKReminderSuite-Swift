@@ -88,6 +88,8 @@ extension EKRecurrenceRule {
             name = EKRSFrequencyMonthly
         case .yearly:
             name = EKRSFrequencyYearly
+        @unknown default:
+            break
         }
         
         return name

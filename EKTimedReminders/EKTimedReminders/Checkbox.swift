@@ -108,7 +108,7 @@ class Checkbox: UIControl {
             // Flag ourself as needing to be redrawn.
             self.setNeedsDisplay()
             
-            UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil)
+            UIAccessibility.post(notification: UIAccessibility.Notification.layoutChanged, argument: nil)
         }
     }
     
@@ -123,7 +123,7 @@ class Checkbox: UIControl {
     //  the underlying UIEvent when their associated IBActions are invoked.
     //  This method functions identically to -sendActionsForControlEvents:
     //  but accepts a UIEvent that is sent with the action messages.
-    func sendActionsForControlEvents(_ controlEvents: UIControlEvents, withEvent event: UIEvent?) {
+    func sendActionsForControlEvents(_ controlEvents: UIControl.Event, withEvent event: UIEvent?) {
         let allTargets = self.allTargets
         
         for target in allTargets {
@@ -190,7 +190,7 @@ class Checkbox: UIControl {
         // Always combine our accessibilityTraits with the super's
         // accessibilityTraits
         get {
-            return super.accessibilityTraits | UIAccessibilityTraitButton
+            return [super.accessibilityTraits, .button]
         }
         set {
             super.accessibilityTraits = newValue
